@@ -75,6 +75,7 @@ def get_main(url,h5_path='temp.h5'):
     # Accessing the dataset of interest:
     h5_main = usid.USIDataset(h5_meas_grp['Channel_000/Raw_Data'])
     num_rows, num_cols = h5_main.pos_dim_sizes
+    return h5_main
 
 def test_peak_finding(h5_main):
     row_ind, col_ind = 110, 25
@@ -98,14 +99,14 @@ def run_dask_compute(h5_main):
     return dask_results
 
 def run_serial_compute(h5_main):
+    raw_data = h5_main([])
     serial_results = list()
     for vector in raw_data:
         serial_results.append(find_all_peaks(vector, [20, 60], num_steps=30))
     return serial_results
 
-def run_parallel_compute(h5_main): 
+def run_parallel_compute(h5_main,cpu_cores=20): 
     raw_data = h5_main[()]
-    cpu_cores = 20
     args = [[20, 60]]
     kwargs = {'num_steps': 30}
     parallel_results = usid.parallel_compute(raw_data, find_all_peaks, cores=cpu_cores, func_args=args, func_kwargs=kwargs)
