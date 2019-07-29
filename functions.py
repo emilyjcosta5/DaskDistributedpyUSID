@@ -113,10 +113,15 @@ def run_parallel_compute(h5_main,cpu_cores=16):
     parallel_results = usid.parallel_compute(raw_data, find_all_peaks, cores=cpu_cores, func_args=args, func_kwargs=kwargs)
     return parallel_results
 
-def plot_compute_times(cpu_vec,times_vec):
+def plot_compute_times(cpu_vec,times_vec,com_vec,png_name='benchmarks'):
+    colors = list()
+    for com in com_vec:
+        if com = 'Parallel': colors.append('blue')
+        if com = 'Dask': colors.append('red')
+        if com = 'Serial': colors.append('green')
     fig, axis = plt.subplots(figsize=(3.5, 3.5))
-    axis.scatter(cores_vec, times_vec)
+    axis.scatter(cpu_vec, times_vec, c=colors)
     axis.set_xlabel('CPU cores', fontsize=14)
     axis.set_ylabel('Compute time (sec)', fontsize=14)
     fig.tight_layout()
-    plt.savefig('benchmarks.png')
+    plt.savefig('{}.png'.format(png_name))
