@@ -25,7 +25,7 @@ except ImportError:
 # The mathematical computation package:
 import numpy as np
 import dask
-from dask.distributed import Client
+from dask.distributed import Client, LocalCluster
 import dask.array as da
 
 # The package used for creating and manipulating HDF5 files:
@@ -90,10 +90,11 @@ def test_peak_finding(h5_main):
     axis.set_ylim([0, 1.1 * np.max(np.abs(spectra))]);
     axis.set_title('find_all_peaks found peaks at index: {}'.format(peak_inds), fontsize=16)
 
-def run_dask_compute(h5_main):
+def run_dask_compute(h5_main,cpu_cores=16):
     raw_data = h5_main[()]
     dask_raw_data = da.from_array(raw_data, chunks='auto')
-    client = Client(processes=True)
+    cluster = LocalCluster(n_workers=cpu_cores)
+    client = Client(cluster, processes=True)
     L = client.map(find_all_peaks, dask_raw_data, width_bounds = [20, 60], num_steps=30)
     dask_results = client.gather(L)
     return dask_results
@@ -105,7 +106,7 @@ def run_serial_compute(h5_main):
         serial_results.append(find_all_peaks(vector, [20, 60], num_steps=30))
     return serial_results
 
-def run_parallel_compute(h5_main,cpu_cores=20): 
+def run_parallel_compute(h5_main,cpu_cores=16): 
     raw_data = h5_main[()]
     args = [[20, 60]]
     kwargs = {'num_steps': 30}
