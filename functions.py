@@ -62,7 +62,7 @@ except ImportError:
 # import the scientific function:
 import sys
 sys.path.append('./supporting_docs/')
-from peak_finding import find_all_peak
+from peak_finding import find_all_peaks
 
 def get_main(url,h5_path='temp.h5'):
     if os.path.exists(h5_path):
@@ -116,9 +116,9 @@ def run_parallel_compute(h5_main,cpu_cores=16):
 def plot_compute_times(cpu_vec,times_vec,com_vec,png_name='benchmarks'):
     colors = list()
     for com in com_vec:
-        if com = 'Parallel': colors.append('blue')
-        if com = 'Dask': colors.append('red')
-        if com = 'Serial': colors.append('green')
+        if com is 'Parallel': colors.append('blue')
+        if com is 'Dask': colors.append('red')
+        if com is 'Serial': colors.append('green')
     fig, axis = plt.subplots(figsize=(3.5, 3.5))
     axis.scatter(cpu_vec, times_vec, c=colors)
     axis.set_xlabel('CPU cores', fontsize=14)
